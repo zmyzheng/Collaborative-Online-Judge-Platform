@@ -6,7 +6,7 @@ namespace ApiServer.Core
 {
     public interface IUnitOfWork : IDisposable
     {
-        IProblemRepository Problems { get; }
+        IProblemRepository ProblemRepository { get; }
         Task<int> CommitAsync();
     }
 }
