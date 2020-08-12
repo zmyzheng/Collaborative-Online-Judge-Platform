@@ -12,3 +12,5 @@ dotnet add ApiServer.Services reference ApiServer.Core/
 
 dotnet add ApiServer.Api reference ApiServer.Core ApiServer.Data ApiServer.Services
 
+dotnet add ApiServer.Data package Microsoft.EntityFrameworkCore
+
