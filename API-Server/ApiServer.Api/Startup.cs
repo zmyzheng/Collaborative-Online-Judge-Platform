@@ -29,6 +29,11 @@ namespace ApiServer.Api
         {
             services.AddControllers();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            // Transient vs Scoped vs Singleton
+            //     You noticed that we added the dependency as Scoped. We have 3 types of dependency injection:
+            //     Transient — Objects are different. One new instance is provided to every controller and every service
+            //     Scoped — Objects are same through the request
+            //     Singleton — Objects are the same for every request during the application lifetime
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
