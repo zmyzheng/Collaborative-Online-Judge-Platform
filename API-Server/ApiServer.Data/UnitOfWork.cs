@@ -15,7 +15,7 @@ namespace ApiServer.Data
             this._context = context;
         }
  
-        public IProblemRepository ProblemRepository => _problemRepository ?? new ProblemRepository(_context);
+        public IProblemRepository ProblemRepository => _problemRepository = _problemRepository ?? new ProblemRepository(_context);
 
 
         public async Task<int> CommitAsync()

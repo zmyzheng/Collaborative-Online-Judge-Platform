@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace ApiServer.Api
 {
@@ -42,6 +43,10 @@ namespace ApiServer.Api
             //     Transient — Objects are different. One new instance is provided to every controller and every service
             //     Scoped — Objects are same through the request
             //     Singleton — Objects are the same for every request during the application lifetime
+            services.AddSwaggerGen(options =>
+                {
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "API Server", Version = "v1" });
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +67,14 @@ namespace ApiServer.Api
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+            c.RoutePrefix = string.Empty;
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Server V1");
+            });
+
         }
     }
 }
