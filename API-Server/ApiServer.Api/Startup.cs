@@ -6,6 +6,7 @@ using ApiServer.Core;
 using ApiServer.Core.Services;
 using ApiServer.Data;
 using ApiServer.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -47,6 +48,7 @@ namespace ApiServer.Api
                 {
                     options.SwaggerDoc("v1", new OpenApiInfo { Title = "API Server", Version = "v1" });
                 });
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
