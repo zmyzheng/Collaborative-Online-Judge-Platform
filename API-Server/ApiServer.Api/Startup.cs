@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiServer.Core;
+using ApiServer.Core.Services;
 using ApiServer.Data;
+using ApiServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +36,7 @@ namespace ApiServer.Api
 
             services.AddControllers();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IProblemService, ProblemService>();
             // Transient vs Scoped vs Singleton
             //     You noticed that we added the dependency as Scoped. We have 3 types of dependency injection:
             //     Transient — Objects are different. One new instance is provided to every controller and every service

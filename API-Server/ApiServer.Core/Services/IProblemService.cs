@@ -9,7 +9,7 @@ namespace ApiServer.Core.Services
         Task<IEnumerable<Problem>> GetAllProblems();
         Task<Problem> GetProblemById(int id);
         Task<Problem> CreateProblem(Problem newProblem);
-        Task UpdateProblem(int problemId, Problem updatedProblem);
-        Task DeleteArtist(Problem problem);
+        Task<Problem> UpdateProblem(int problemId, Problem updatedProblem);
+        Task<Problem> DeleteProblemById(int id);
     }
 }
