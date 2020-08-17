@@ -36,5 +36,32 @@ namespace ApiServer.Api.Controllers
             var problemResource = _mapper.Map<Problem, ProblemResource>(problem);
             return Ok(problemResource);
         }
+
+
+        [HttpPost("")]
+        public async Task<ActionResult<ProblemResource>> CreateProblem([FromBody] ProblemResource newProblem)
+        {
+            var problemToCreate = _mapper.Map<ProblemResource, Problem>(newProblem);
+            var problemCreated = await _problemService.CreateProblem(problemToCreate);
+            var problemResource = _mapper.Map<Problem, ProblemResource>(problemCreated);
+            return Ok(problemResource);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ProblemResource>> UpdateProblem(int id, [FromBody] ProblemResource updatedProblemResource)
+        {
+            var problem = _mapper.Map<ProblemResource, Problem>(updatedProblemResource);
+            var updatedProblem = await _problemService.UpdateProblem(id, problem);
+            var problemResource = _mapper.Map<Problem, ProblemResource>(updatedProblem);
+            return Ok(problemResource);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ProblemResource>> DeleteProblem(int id)
+        {
+            var problemDeleted = await _problemService.DeleteProblemById(id);
+            var problemResource = _mapper.Map<Problem, ProblemResource>(problemDeleted);
+            return Ok(problemResource);
+        }
     }
 }
