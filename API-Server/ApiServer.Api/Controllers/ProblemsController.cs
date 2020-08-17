@@ -28,5 +28,13 @@ namespace ApiServer.Api.Controllers
             var problemResources = _mapper.Map<IEnumerable<Problem>, IEnumerable<ProblemResource>>(problems);
             return Ok(problemResources);
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProblemResource>> GetProblemById(int id)
+        {
+            var problem = await _problemService.GetProblemById(id);
+            var problemResource = _mapper.Map<Problem, ProblemResource>(problem);
+            return Ok(problemResource);
+        }
     }
 }
