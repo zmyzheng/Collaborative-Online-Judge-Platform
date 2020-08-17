@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiServer.Api.Validators;
 using ApiServer.Core;
 using ApiServer.Core.Services;
 using ApiServer.Data;
 using ApiServer.Services;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,7 +38,13 @@ namespace ApiServer.Api
             services.AddDbContext<ApiServerDbContext>(options => 
                 options.UseNpgsql(Configuration.GetConnectionString("PostgreSql"), action => action.MigrationsAssembly("ApiServer.Data"))); //our migrations should be run in ApiServer.Data.
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv => 
+                {
+                    fv.RegisterValidatorsFromAssemblyContaining<ProblemResourceValidator>(lifetime: ServiceLifetime.Transient); //This will automatically find any public, non-abstract types that inherit from AbstractValidator and register them with the container
+                    fv.ImplicitlyValidateChildProperties = true;
+                }); 
+                
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProblemService, ProblemService>();
             // Transient vs Scoped vs Singleton
