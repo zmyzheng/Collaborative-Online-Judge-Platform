@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiServer.Data.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity, ID> : IRepository<TEntity, ID> where TEntity : class
     {
         protected readonly DbContext Context;
         
@@ -37,7 +37,7 @@ namespace ApiServer.Data.Repositories
             return  await Context.Set<TEntity>().ToListAsync();
         }
 
-        public ValueTask<TEntity> GetByIdAsync(int id)
+        public ValueTask<TEntity> GetByIdAsync(ID id)
         {
             return Context.Set<TEntity>().FindAsync(id);
         }

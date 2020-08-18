@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiServer.Data.Repositories
 {
-    public class ProblemRepository : Repository<Problem>, IProblemRepository
+    public class ProblemRepository : Repository<Problem, int>, IProblemRepository
     {
         public ProblemRepository(ApiServerDbContext context) : base(context) {}
 
