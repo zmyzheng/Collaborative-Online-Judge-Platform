@@ -44,7 +44,7 @@ namespace ApiServer.Api
                     fv.RegisterValidatorsFromAssemblyContaining<ProblemResourceValidator>(lifetime: ServiceLifetime.Transient); //This will automatically find any public, non-abstract types that inherit from AbstractValidator and register them with the container
                     fv.ImplicitlyValidateChildProperties = true;
                 }); 
-                
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProblemService, ProblemService>();
             // Transient vs Scoped vs Singleton
@@ -54,7 +54,24 @@ namespace ApiServer.Api
             //     Singleton — Objects are the same for every request during the application lifetime
             services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "API Server", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo
+                    {
+                        Version = "v1",
+                        Title = "API Server",
+                        Description = "A simple example ASP.NET Core Web API",
+                        // TermsOfService = new Uri("https://example.com/terms"),
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Mingyang Zheng",
+                            Email = "zhengzmy@gmail.com",
+                            Url = new Uri("https://github.com/zmyzheng"),
+                        },
+                        License = new OpenApiLicense
+                        {
+                            Name = "MIT License",
+                            Url = new Uri("https://github.com/zmyzheng/Collaborative-Online-Judge-Platform/blob/master/LICENSE"),
+                        }
+                    });
                 });
             services.AddAutoMapper(typeof(Startup));
         }
@@ -81,7 +98,7 @@ namespace ApiServer.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-            c.RoutePrefix = string.Empty;
+            c.RoutePrefix = "swagger-ui";
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Server V1");
             });
 
