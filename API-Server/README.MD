@@ -23,3 +23,12 @@ note: 如果没有特殊的操作，如handle foreign key，只要Repository就�
 
 
 Swagger UI: https://localhost:5001/swagger-ui
+
+
+dotnet publish -c Release
+
+docker build -t zmyzheng/api-server:latest -f Dockerfile .
+
+The . in the docker build command tells Docker to use the current folder to find a Dockerfile. 
+
+docker push zmyzheng/api-server:latest
