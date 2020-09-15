@@ -10,12 +10,25 @@ namespace AuthServer.IdentityServer
     public static class Config
     {
         public static IEnumerable<IdentityResource> IdentityResources =>
-                   new IdentityResource[]
-                   {
+            new IdentityResource[]
+            {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                   };
+            };
 
+        public static IEnumerable<ApiResource> ApiResources =>
+            new ApiResource[]
+            {
+                new ApiResource
+                {
+                    Name = "api1",
+                    DisplayName = "API #1",
+                    Description = "Allow the application to access API #1 on your behalf",
+                    Scopes = new List<string> {"scope1", "scope2"},
+                    ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())}
+                }
+            };
+        
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
