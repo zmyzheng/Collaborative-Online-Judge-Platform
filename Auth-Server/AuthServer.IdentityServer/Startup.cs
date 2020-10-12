@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace AuthServer.IdentityServer
 {
@@ -28,6 +29,8 @@ namespace AuthServer.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -47,10 +50,27 @@ namespace AuthServer.IdentityServer
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiResources(Config.ApiResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients)
+                // .AddInMemoryIdentityResources(Config.IdentityResources)
+                // .AddInMemoryApiResources(Config.ApiResources)
+                // .AddInMemoryApiScopes(Config.ApiScopes)
+                // .AddInMemoryClients(Config.Clients)
+
+                // https://identityserver4.readthedocs.io/en/latest/quickstarts/5_entityframework.html
+                .AddConfigurationStore(
+                    options =>
+                    {
+                        // the call to MigrationsAssembly is used to inform Entity Framework that the host project will contain the migrations code. This is necessary since the host project is in a different assembly than the one that contains the DbContext classes (PersistedGrantDbContext ConfigurationDbContext)
+                        options.ConfigureDbContext = b => b.UseNpgsql(Configuration.GetConnectionString("PostgreSql"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    }
+                )
+                .AddOperationalStore(
+                    options =>
+                    {
+                        options.ConfigureDbContext = b => b.UseNpgsql(Configuration.GetConnectionString("PostgreSql"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    }
+                )  
+
+
                 .AddAspNetIdentity<ApplicationUser>();
 
             // not recommended for production - you need to store your key material somewhere secure

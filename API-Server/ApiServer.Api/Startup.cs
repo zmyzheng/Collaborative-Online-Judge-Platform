@@ -75,6 +75,17 @@ namespace ApiServer.Api
                     });
                 });
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,6 +101,8 @@ namespace ApiServer.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("default");
 
             app.UseAuthorization();
 

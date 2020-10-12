@@ -47,6 +47,14 @@ namespace AuthServer.IdentityServer
 
                 if (seed)
                 {
+                    Log.Information("Seeding config...");
+                    SeedData.MigrateAndSeedConfig(host.Services);
+                    Log.Information("Done seeding config.");
+                }
+             
+
+                if (seed)
+                {
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
                     var connectionString = config.GetConnectionString("PostgreSql");

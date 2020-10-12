@@ -12,11 +12,64 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace AuthServer.IdentityServer
 {
     public class SeedData
     {
+        public static void MigrateAndSeedConfig(IServiceProvider serviceProvider) 
+        {
+            using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                context.Database.Migrate();
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in Config.Clients)
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+                else
+                {
+                    Log.Debug("Clients already exist");
+                }
+
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in Config.IdentityResources)
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+                else
+                {
+                    Log.Debug("IdentityResources already exist");
+                }
+
+                if (!context.ApiScopes.Any())
+                {
+                    foreach (var resource in Config.ApiScopes)
+                    {
+                        context.ApiScopes.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+                else
+                {
+                    Log.Debug("ApiScopes already exist");
+                }
+            }
+
+            
+
+        }
+
         public static void EnsureSeedData(string connectionString)
         {
             var services = new ServiceCollection();

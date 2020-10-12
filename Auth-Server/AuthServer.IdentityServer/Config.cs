@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
@@ -16,6 +17,7 @@ namespace AuthServer.IdentityServer
                 new IdentityResources.Profile(),
             };
 
+        // 目前来看没什么用，可以删除,具体使用见https://identityserver4.readthedocs.io/en/latest/topics/resources.html
         public static IEnumerable<ApiResource> ApiResources =>
             new ApiResource[]
             {
@@ -32,7 +34,7 @@ namespace AuthServer.IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("scope1"),
+                new ApiScope("api1", "API #1"),
                 new ApiScope("scope2"),
             };
 
@@ -48,10 +50,10 @@ namespace AuthServer.IdentityServer
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "scope1" }
+                    AllowedScopes = { "api1" }
                 },
 
-                // interactive client using code flow + pkce
+                // interactive client using code flow + pkce for MVC client
                 new Client
                 {
                     ClientId = "interactive",
@@ -59,13 +61,28 @@ namespace AuthServer.IdentityServer
 
                     AllowedGrantTypes = GrantTypes.Code,
 
-                    RedirectUris = { "https://localhost:44300/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
+                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+                    FrontChannelLogoutUri = "https://localhost:5002/signout-oidc",
+                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
-                    AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "scope2" }
+                    AllowOfflineAccess = true, // enable support for refresh tokens
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1" } // 包括identity resources和API scopes
                 },
+
+                // JavaScript Client
+                new Client
+                {
+                    ClientId = "js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+
+                    RedirectUris =           { "https://localhost:5003/callback.html" },
+                    PostLogoutRedirectUris = { "https://localhost:5003/index.html" },
+                    AllowedCorsOrigins =     { "https://localhost:5003" },
+
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1" }
+                }
             };
     }
 }
